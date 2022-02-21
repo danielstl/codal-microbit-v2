@@ -169,7 +169,7 @@ int MicroBit::init()
 #endif
 
     // Determine if we have been reprogrammed. If so, follow configured policy on erasing any persistent user data.
-    eraseUserStorage();
+    //TODO re-enable? eraseUserStorage();
 
     // Bring up fiber scheduler.
     scheduler_init(messageBus);

@@ -522,6 +522,20 @@ MicroBitUSBFlashManager::getFlashSize()
     return getFlashEnd();
 }
 
+ManagedBuffer MicroBitUSBFlashManager::transact_DEBUG(ManagedBuffer request, int responseLength)
+{
+    power.nop();
+
+    if (status & MICROBIT_USB_FLASH_USE_NULL_TRANSACTION)
+    {
+        ManagedBuffer nop_request(1);
+        nop_request[0] = MICROBIT_USB_FLASH_VISIBILITY_CMD;
+        _transact(nop_request, usbFlashPropertyLength.get(MICROBIT_USB_FLASH_VISIBILITY_CMD));
+    }
+
+    return _transact(request, responseLength);
+}
+
 /**
  * Performs a flash storage transaction with the interface chip.
  * @param packet The data to write to the interface chip as a request operation.

@@ -254,6 +254,14 @@ class MicroBitUSBFlashManager : public CodalComponent, public NVMController
          */
         virtual uint32_t getFlashSize() override;
 
+    /**
+* Performs a flash storage transaction with the interface chip.
+* @param packet The data to write to the interface chip as a request operation.
+* @param responseLength The length of the expected reponse packet.
+* @return a buffer containing the response to the request, or a zero length buffer on failure.
+*/
+    ManagedBuffer transact_DEBUG(ManagedBuffer request, int responseLength);
+
         /**
          * Destructor.
          */
