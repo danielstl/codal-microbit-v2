@@ -70,6 +70,7 @@ DEALINGS IN THE SOFTWARE.
 #define MICROBIT_USB_FLASH_SECTOR_SIZE_CMD          0x07            // Determine the size of a physical FLASH sector.
 #define MICROBIT_USB_FLASH_REMOUNT_CMD              0x08            // Remount the MICORBIT drive, taking into account any changes to config.
 #define MICROBIT_USB_FLASH_STATUS_CMD               0x09            // Determine if USB interface chip is BUSY (unused).
+#define MICROBIT_USB_FLASH_HEX_WINDOW_CMD           0x09            // Set the HEX encoding window.
 #define MICROBIT_USB_FLASH_READ_CMD                 0x0A            // Perform a READ operation from applicaiton FLASH memory.
 #define MICROBIT_USB_FLASH_WRITE_CMD                0x0B            // Perform a WRITE operation from applicaiton FLASH memory.
 #define MICROBIT_USB_FLASH_ERASE_CMD                0x0C            // Perform a ERASE operation from applicaiton FLASH memory.
@@ -261,13 +262,13 @@ class MicroBitUSBFlashManager : public CodalComponent, public NVMController
          */
         virtual uint32_t getFlashSize() override;
 
-    /**
-* Performs a flash storage transaction with the interface chip.
-* @param packet The data to write to the interface chip as a request operation.
-* @param responseLength The length of the expected reponse packet.
-* @return a buffer containing the response to the request, or a zero length buffer on failure.
-*/
-    ManagedBuffer transact_DEBUG(ManagedBuffer request, int responseLength);
+        /**
+        * Sets the hex encoding window for this flash memory. This defines a region
+        * of flash memory to be hex-encoded when exposed over DAPLink.
+        * @param encodingStart The logical address to start the encoding window
+        * @param encodingEnd The logical address to stop the encoding window
+        */
+        void setHexEncodingWindow(uint32_t encodingStart, uint32_t encodingEnd);
 
         /**
          * Destructor.

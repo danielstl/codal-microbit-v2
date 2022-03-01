@@ -89,7 +89,7 @@ MicroBitUSBFlashConfig MicroBitUSBFlashManager::getConfiguration()
         status |= MICROBIT_USB_FLASH_CONFIG_LOADED;
     }
 
-    return config;    
+    return config;
 }
 
 /**
@@ -131,7 +131,7 @@ int MicroBitUSBFlashManager::setConfiguration(MicroBitUSBFlashConfig config, boo
         if (config.fileName.charAt(i) =='.')
             dots++;
         else if (!isValidChar(config.fileName.charAt(i)))
-            invalidChar = true;        
+            invalidChar = true;
     }
 
     // Blimey 8.3 is complex. :)
@@ -279,7 +279,7 @@ int MicroBitUSBFlashManager::eraseConfig()
  * 
  * @return the data read, or a zero length buffer on failure.
  */
-ManagedBuffer 
+ManagedBuffer
 MicroBitUSBFlashManager::read(uint32_t address, uint32_t length)
 {
     ManagedBuffer request(8);
@@ -304,7 +304,7 @@ MicroBitUSBFlashManager::read(uint32_t address, uint32_t length)
     {
         response = ManagedBuffer();
     }
-    
+
     return response;
 }
 
@@ -314,15 +314,15 @@ MicroBitUSBFlashManager::read(uint32_t address, uint32_t length)
  * @param dest The address in RAM in which to store the result of the read operation
  * @param address The logical address in non-voltile memory to read from
  * @param length The number 32-bit words to read.
- */ 
-int 
+ */
+int
 MicroBitUSBFlashManager::read(uint32_t* dest, uint32_t address, uint32_t length)
 {
     ManagedBuffer b = read(address, length);
 
     if (b.length() == 0)
         return DEVICE_NO_DATA;
-    
+
     memcpy(dest, &b[0], length * sizeof(uint32_t));
     return DEVICE_OK;
 }
@@ -354,7 +354,7 @@ int MicroBitUSBFlashManager::write(uint32_t address, uint32_t *data, uint32_t le
     while (p < end)
     {
         segmentLength = min(maxWriteLength, length-bytesWritten);
-        
+
         uint32_t *ptr = (uint32_t *) &request[0];
         *ptr++ = htonl( p | (MICROBIT_USB_FLASH_WRITE_CMD << 24));
         *ptr++ = htonl(segmentLength);
@@ -414,7 +414,7 @@ int MicroBitUSBFlashManager::erase(uint32_t address, uint32_t length)
     length = length * sizeof(uint32_t);
 
     // Ensure we have a valid request
-    if ((address + length > geometry.blockSize * geometry.blockCount) || (length % sizeof(uint32_t) != 0)) 
+    if ((address + length > geometry.blockSize * geometry.blockCount) || (length % sizeof(uint32_t) != 0))
         return DEVICE_INVALID_PARAMETER;
 
     // Calculcate block aligned start and end addresses for the erase operation, taking into account that he KL27 
@@ -470,7 +470,7 @@ int MicroBitUSBFlashManager::erase(uint32_t address, uint32_t length)
     // Restore any saved data if necessary
     if (restoreBuffer1.length() > 0)
         this->write(restoreBuffer1, eraseStart);
-    
+
     if (restoreBuffer2.length() > 0)
         this->write(restoreBuffer2, (address + length));
 
@@ -482,7 +482,7 @@ int MicroBitUSBFlashManager::erase(uint32_t address, uint32_t length)
  * 
  * @param page The address of the page to erase (logical address of the start of the page).
  */
-int 
+int
 MicroBitUSBFlashManager::erase(uint32_t page)
 {
     getGeometry();
@@ -499,7 +499,7 @@ MicroBitUSBFlashManager::getFlashStart()
 {
     // We index from logival address zero.
     return 0;
-    
+
 }
 
 /**
@@ -540,18 +540,32 @@ MicroBitUSBFlashManager::getFlashSize()
     return getFlashEnd();
 }
 
-ManagedBuffer MicroBitUSBFlashManager::transact_DEBUG(ManagedBuffer request, int responseLength)
-{
-    power.nop();
+/**
+ * Sets the hex encoding window for this flash memory. This defines a region
+ * of flash memory to be hex-encoded when exposed over DAPLink.
+ * @param encodingStart The logical address to start the encoding window
+ * @param encodingEnd The logical address to stop the encoding window
+*/
+void MicroBitUSBFlashManager::setHexEncodingWindow(uint32_t encodingStart, uint32_t encodingEnd) {
 
-    if (status & MICROBIT_USB_FLASH_USE_NULL_TRANSACTION)
-    {
-        ManagedBuffer nop_request(1);
-        nop_request[0] = MICROBIT_USB_FLASH_VISIBILITY_CMD;
-        _transact(nop_request, usbFlashPropertyLength.get(MICROBIT_USB_FLASH_VISIBILITY_CMD));
-    }
+    ManagedBuffer request(9);
 
-    return _transact(request, responseLength);
+    //  I2C Write:  [0x72,    0x09,   0x00,0x00,0x00,0x00,    0x00,0x00,0x04,0x00]]
+    //       I2C Addr ↑  cmd id ↑    enc window start ↑        enc window end ↑
+
+    request[0] = MICROBIT_USB_FLASH_HEX_WINDOW_CMD; // set encoding window
+
+    request[4] = encodingStart; // TODO: this could probably be tidied up...
+    request[3] = encodingStart >> 8;
+    request[2] = encodingStart >> 16;
+    request[1] = encodingStart >> 24;
+
+    request[8] = encodingEnd;
+    request[7] = encodingEnd >> 8;
+    request[6] = encodingEnd >> 16;
+    request[5] = encodingEnd >> 24;
+
+    _transact(request, 2);
 }
 
 /**
