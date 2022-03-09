@@ -271,16 +271,16 @@ void MicroBitLog::_clear(bool fullErase)
 
     // Erase block associated with the FULL indicator. We don't perform a pag eerase here to reduce flash wear.
     uint32_t zero = 0x00000000;
-    flash.write(logEnd, &zero, 1);
+    //flash.write(logEnd, &zero, 1);
 
     // Erase all pages associated with the header, all meta data and the first page of data storage.
-    cache.clear();
-    for (uint32_t p = flash.getFlashStart(); p <= (fullErase ? logEnd : dataStart); p += flash.getPageSize())
-        flash.erase(p);
+ //   cache.clear();
+   // for (uint32_t p = flash.getFlashStart(); p <= (fullErase ? logEnd : dataStart); p += flash.getPageSize())
+   //     flash.erase(p);
 
     // Serialise and write header (if we have one)
     // n.b. we use flash.write() here to avoid unecessary preheating of the cache.
-    flash.write(flash.getFlashStart(), (uint32_t *)header, sizeof(header)/4);
+   // flash.write(flash.getFlashStart(), (uint32_t *)header, sizeof(header)/4);
 
     // Generate and write FS metadata
     memcpy(metaData.version, MICROBIT_LOG_VERSION, 18);
@@ -290,11 +290,11 @@ void MicroBitLog::_clear(bool fullErase)
     writeNum(metaData.dataStart+2, dataStart);
     writeNum(metaData.logEnd+2, logEnd);
 
-    cache.write(startAddress, &metaData, sizeof(metaData));
+   // cache.write(startAddress, &metaData, sizeof(metaData));
 
     // Record that the log is empty
     JournalEntry je;
-    cache.write(journalHead, &je, MICROBIT_LOG_JOURNAL_ENTRY_SIZE);
+  //  cache.write(journalHead, &je, MICROBIT_LOG_JOURNAL_ENTRY_SIZE);
 
     // Update physical file size and visibility information.
     // If we're doing a full erase, remove the file from view.
@@ -624,9 +624,9 @@ int MicroBitLog::_endRow()
         }
         h = h + "\n";
         
-        cache.write(headingStart, &zero[0], headingLength);
+     //   cache.write(headingStart, &zero[0], headingLength);
         headingStart += headingLength;
-        cache.write(headingStart, h.toCharArray(), h.length());
+    //    cache.write(headingStart, h.toCharArray(), h.length());
         headingLength = h.length();
 
         _logString(h);
@@ -731,7 +731,7 @@ int MicroBitLog::_logString(const char *s)
     {
         if (!(status & MICROBIT_LOG_STATUS_FULL))
         {
-            cache.write(logEnd+1, "FUL", 3);
+   //         cache.write(logEnd+1, "FUL", 3);
             status |= MICROBIT_LOG_STATUS_FULL;
         }
 
@@ -767,7 +767,7 @@ int MicroBitLog::_logString(const char *s)
 
         // Perform a write through cache update
         //DMESG("   WRITING [ADDRESS: %p] [LENGTH: %d] ", dataEnd, lengthToWrite);
-        cache.write(dataEnd, data, lengthToWrite);
+  //      cache.write(dataEnd, data, lengthToWrite);
 
         // move on pointers
         dataEnd += lengthToWrite;
@@ -803,13 +803,13 @@ int MicroBitLog::_logString(const char *s)
         // Write journal entry
         JournalEntry je;
         writeNum(je.length, ((dataEnd-dataStart) / CONFIG_MICROBIT_LOG_CACHE_BLOCK_SIZE) * CONFIG_MICROBIT_LOG_CACHE_BLOCK_SIZE);
-        cache.write(journalHead, &je, MICROBIT_LOG_JOURNAL_ENTRY_SIZE);
+      //  cache.write(journalHead, &je, MICROBIT_LOG_JOURNAL_ENTRY_SIZE);
 
         // Invalidate the old one
         JournalEntry empty;
         empty.clear();
         //DMESG("   INVALIDATING: %p", oldJournalHead);
-        cache.write(oldJournalHead, &empty, MICROBIT_LOG_JOURNAL_ENTRY_SIZE);
+     //   cache.write(oldJournalHead, &empty, MICROBIT_LOG_JOURNAL_ENTRY_SIZE);
     }
 
     // Return NO_RESOURCES if we ran out of FLASH space.
@@ -911,8 +911,8 @@ void MicroBitLog::_invalidate()
         memclr(&m, sizeof(MicroBitLogMetaData));
 
         // Erase the LogFS metadata and trailing FULL indicator.
-        flash.write(startAddress, (uint32_t *) &m, sizeof(MicroBitLogMetaData)/4);
-        flash.write(logEnd, (uint32_t *) &m, 1);
+      //  flash.write(startAddress, (uint32_t *) &m, sizeof(MicroBitLogMetaData)/4);
+      //  flash.write(logEnd, (uint32_t *) &m, 1);
     }
 
     status &= ~MICROBIT_LOG_STATUS_INITIALIZED; 

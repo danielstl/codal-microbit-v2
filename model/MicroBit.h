@@ -71,6 +71,7 @@ DEALINGS IN THE SOFTWARE.
 #include "LevelDetectorSPL.h"
 #include "PulseIn.h"
 #include "neopixel.h"
+#include "CodalFS.h"
 
 #include "MESEvents.h"
 
@@ -174,7 +175,8 @@ namespace codal
             Compass&                    compass;
             MicroBitCompassCalibrator   compassCalibrator;
             MicroBitAudio               audio;
-            MicroBitLog                 log;
+            CodalFS                     filesystem;
+            //MicroBitLog                 log;
 
 
             /**

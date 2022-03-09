@@ -86,7 +86,8 @@ MicroBit::MicroBit() :
     compass(MicroBitCompass::autoDetect(_i2c)),
     compassCalibrator(compass, accelerometer, display, storage),
     audio(io.P0, io.speaker),
-    log(flash, serial)
+    filesystem(flash, 512)
+    //log(flash, serial)
 {
     // Clear our status
     status = 0;
@@ -392,7 +393,7 @@ void MicroBit::eraseUserStorage(bool forceErase)
 
     // Determine if our flash contains a recognised file system. If so, invalidate it.
 #if (CONFIG_MICROBIT_ERASE_USER_DATA_ON_REFLASH == 1)
-    log.invalidate();
+    //log.invalidate();
 #endif
 }
 
