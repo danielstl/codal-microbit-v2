@@ -153,7 +153,7 @@ MicroBit::MicroBit() :
   *       contained within the GenuinoZero class.
   */
 int MicroBit::init()
-{
+{DMESGF("Microbit INIT!");
     if (status & DEVICE_INITIALIZED)
         return DEVICE_NOT_SUPPORTED;
 

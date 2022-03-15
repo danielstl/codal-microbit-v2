@@ -21,6 +21,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include "MicroBitFile.h"
 #include "ErrorNo.h"
+#include "CodalFS.h"
 
 /**
   * Creates an instance of a MicroBitFile and creates a new file if required.
@@ -32,15 +33,8 @@ DEALINGS IN THE SOFTWARE.
 MicroBitFile::MicroBitFile(ManagedString fileName, int mode)
 {
     this->fileName = fileName;
-
-    MicroBitFileSystem* fs;
-
-    if(MicroBitFileSystem::defaultFileSystem == NULL)
-        fs = new MicroBitFileSystem();
-    else
-        fs = MicroBitFileSystem::defaultFileSystem;
-
-    fileHandle = fs->open(fileName.toCharArray(), mode);
+    
+    fileHandle = CodalFS::defaultFileSystem->open(fileName.toCharArray(), mode);
 }
 
 /**
@@ -59,7 +53,7 @@ int MicroBitFile::setPosition(int offset)
     if(offset < 0)
         return MICROBIT_INVALID_PARAMETER;
 
-    return MicroBitFileSystem::defaultFileSystem->seek(fileHandle, offset, MB_SEEK_SET);
+    return CodalFS::defaultFileSystem->seek(fileHandle, offset, FS_SEEK_SET);
 }
 
 /**
@@ -72,7 +66,7 @@ int MicroBitFile::getPosition()
     if(fileHandle < 0)
         return MICROBIT_NOT_SUPPORTED;
 
-    return MicroBitFileSystem::defaultFileSystem->seek(fileHandle, 0, MB_SEEK_CUR);
+    return CodalFS::defaultFileSystem->seek(fileHandle, 0, FS_SEEK_CUR);
 }
 
 /**
@@ -91,7 +85,7 @@ int MicroBitFile::write(const char *bytes, int len)
     if(fileHandle < 0)
         return MICROBIT_NOT_SUPPORTED;
 
-    return MicroBitFileSystem::defaultFileSystem->write(fileHandle, (uint8_t*)bytes, len);
+    return CodalFS::defaultFileSystem->write(fileHandle, (uint8_t*)bytes, len);
 }
 
 /**
@@ -147,7 +141,7 @@ int MicroBitFile::read(char *buffer, int size)
     if(size < 0 || buffer == NULL)
         return MICROBIT_INVALID_PARAMETER;
 
-    return MicroBitFileSystem::defaultFileSystem->read(fileHandle, (uint8_t*)buffer, size);
+    return CodalFS::defaultFileSystem->read(fileHandle, (uint8_t*)buffer, size);
 }
 
 /**
@@ -183,7 +177,7 @@ int MicroBitFile::remove()
     if ( fileHandle >= 0)
         close();
 
-    int ret = MicroBitFileSystem::defaultFileSystem->remove(fileName.toCharArray());
+    int ret = CodalFS::defaultFileSystem->remove(fileName.toCharArray());
 
     if(ret < 0)
         return ret;
@@ -208,7 +202,7 @@ int MicroBitFile::append(const char *bytes, int len)
     if(fileHandle < 0)
         return MICROBIT_NOT_SUPPORTED;
 
-    int ret =  MicroBitFileSystem::defaultFileSystem->seek(fileHandle, 0, MB_SEEK_END);
+    int ret =  CodalFS::defaultFileSystem->seek(fileHandle, 0, FS_SEEK_END);
 
     if(ret < 0)
         return ret;
@@ -266,7 +260,7 @@ int MicroBitFile::close()
     if(fileHandle < 0)
         return MICROBIT_NOT_SUPPORTED;
 
-    int ret = MicroBitFileSystem::defaultFileSystem->close(fileHandle);
+    int ret = CodalFS::defaultFileSystem->close(fileHandle);
 
     if(ret < 0)
         return ret;
@@ -288,7 +282,7 @@ int MicroBitFile::flush()
     if(fileHandle < 0)
         return MICROBIT_NOT_SUPPORTED;
 
-    return MicroBitFileSystem::defaultFileSystem->flush(fileHandle);
+    return CodalFS::defaultFileSystem->flush(fileHandle);
 }
 
 /**

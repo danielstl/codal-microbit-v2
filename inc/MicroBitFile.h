@@ -25,11 +25,12 @@ DEALINGS IN THE SOFTWARE.
 #include "MicroBitConfig.h"
 #include "MicroBitFileSystem.h"
 #include "ManagedString.h"
+#include "CodalFS.h"
 
-#define READ                            MB_READ
-#define WRITE                           MB_WRITE
+#define READ                            FS_READ
+#define WRITE                           FS_WRITE
 #define READ_AND_WRITE                  READ | WRITE
-#define CREATE                          MB_CREAT
+#define CREATE                          FS_CREAT
 
 class MicroBitFile
 {
