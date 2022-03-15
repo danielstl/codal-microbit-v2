@@ -58,8 +58,8 @@
     "libraries":[
         {
             "name":"codal-core",
-            "url":"https://github.com/lancaster-university/codal-core",
-            "branch":"codal-fs",
+            "url":"https://github.com/danielstl/codal-core",
+            "branch":"master",
             "type":"git"
         },
         {
