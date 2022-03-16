@@ -269,6 +269,18 @@ int MicroBit::init()
     
     sleep(10);
 
+    // TODO hack!!
+    MicroBitUSBFlashConfig config;
+
+    config.fileName = "MY_FILES.HTM";
+    config.fileSize = flash.getFlashEnd() - flash.getFlashStart() - flash.getPageSize();
+    config.visible = true;
+
+    flash.setConfiguration(config, false);
+    flash.setHexEncodingWindow(4096, flash.getFlashEnd());
+
+    flash.remount();
+
     return DEVICE_OK;
 }
 
