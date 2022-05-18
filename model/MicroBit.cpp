@@ -266,6 +266,8 @@ int MicroBit::init()
     // Deschedule for a little while, just to allow for any components that finialise initialisation
     // as a background task, and to allow the power mamanger to repsonse to background events from the KL27
     // before any user code begins running.
+
+    filesystem.init();
     
     sleep(10);
 
