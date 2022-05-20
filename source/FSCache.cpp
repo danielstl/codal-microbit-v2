@@ -119,7 +119,7 @@ int FSCache::read(uint32_t address, const void *data, int len)
 int FSCache::write(uint32_t address, const void *data, int len)
 {
     if (address < CODALFS_OFFSET) {
-        DMESGF("Write to %d", address);
+        DMESG("Write to %d", address);
     }
 
     address += CODALFS_OFFSET;
@@ -178,7 +178,7 @@ int FSCache::write(uint32_t address, const void *data, int len)
         memcpy(c->page + offset, (uint8_t *)data + bytesCopied, l);
 
         // Write through (maintaining 32-bit aligned operations)
-        DMESGF("Writing through to flash!!");
+        DMESG("Writing through to flash!!");
         flash.write(alignedStart, (uint32_t *)(c->page + (alignedStart % blockSize)), (alignedEnd - alignedStart)/4);
 
         // Move to next page
