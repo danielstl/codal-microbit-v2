@@ -86,7 +86,8 @@ MicroBit::MicroBit() :
     compass(MicroBitCompass::autoDetect(_i2c)),
     compassCalibrator(compass, accelerometer, display, storage),
     audio(io.P0, io.speaker),
-    filesystem(flash, 512)
+    microflash(flash),
+    filesystem(flash, microflash, 512)
     //log(flash, serial)
 {
     // Clear our status
@@ -279,7 +280,7 @@ int MicroBit::init()
     config.visible = true;
 
     flash.setConfiguration(config, false);
-    flash.setHexEncodingWindow(4096, flash.getFlashEnd());
+    flash.setHexEncodingWindow(4000, flash.getFlashEnd());
 
     flash.remount();
 

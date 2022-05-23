@@ -72,6 +72,7 @@ DEALINGS IN THE SOFTWARE.
 #include "PulseIn.h"
 #include "neopixel.h"
 #include "CodalFS.h"
+#include "MicroflashInterface.h"
 
 #include "MESEvents.h"
 
@@ -175,6 +176,7 @@ namespace codal
             Compass&                    compass;
             MicroBitCompassCalibrator   compassCalibrator;
             MicroBitAudio               audio;
+            MicroflashInterface         microflash;
             CodalFS                     filesystem;
             //MicroBitLog                 log;
 
