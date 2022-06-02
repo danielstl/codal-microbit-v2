@@ -118,10 +118,6 @@ int FSCache::read(uint32_t address, const void *data, int len)
  */
 int FSCache::write(uint32_t address, const void *data, int len)
 {
-    if (address < CODALFS_OFFSET) {
-        DMESG("Write to %d", address);
-    }
-
     address += CODALFS_OFFSET;
 
     int bytesCopied = 0;
