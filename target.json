@@ -77,7 +77,7 @@
         {
             "name":"codal-field-testing",
             "url":"https://github.com/JohnVidler/codal-field-testing",
-            "branch":"master",
+            "branch":"main",
             "type":"git"
         }
     ]
