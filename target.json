@@ -26,7 +26,7 @@
         "DEVICE_DEFAULT_PULLMODE":"PullMode::Down",
         "DEVICE_PANIC_HEAP_FULL":1,
         "DEVICE_DMESG_BUFFER_SIZE":1024,
-        "DMESG_SERIAL_DEBUG":0,
+        "DMESG_SERIAL_DEBUG":1,
         "CODAL_DEBUG":"CODAL_DEBUG_DISABLED",
         "DEVICE_USB":0,
         "CODAL_TIMESTAMP":"uint64_t",
@@ -71,6 +71,12 @@
         {
             "name":"codal-microbit-nrf5sdk",
             "url":"https://github.com/microbit-foundation/codal-microbit-nrf5sdk",
+            "branch":"master",
+            "type":"git"
+        },
+        {
+            "name":"codal-field-testing",
+            "url":"https://github.com/JohnVidler/codal-field-testing",
             "branch":"master",
             "type":"git"
         }
